@@ -1,5 +1,12 @@
 # Aplikacja do ankiet/głosowań online
 
+### Technologie
+
+- Backend: Django 
+- Frontend: NextJS
+- Bazy danych: MySQL
+
+### Uruchomienie aplikacji
 Aplikacja ma utworzone obrazy docker jest utworzony odpowiedni plik docker-compose.yml, który pozwala na proste uruchomienie całej aplikacji.
 
 - Frontend będzie działał na http://localhost:3000/
