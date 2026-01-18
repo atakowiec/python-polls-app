@@ -17,6 +17,9 @@ from .serializers import PollCreateSerializer
 
 
 class PollViewSet(ModelViewSet):
+    """
+    A ViewSet for viewing and editing poll instances.
+    """
     queryset = Poll.objects.prefetch_related("options").all()
     serializer_class = PollSerializer
 
@@ -27,6 +30,9 @@ class PollViewSet(ModelViewSet):
         url_path="vote",
     )
     def vote(self, request: Request, pk: int | None = None) -> Response:
+        """
+        Registers a vote for a specific option in a poll.
+        """
         poll: Poll = self.get_object()
         option_id: int | None = request.data.get("option_id")
 
@@ -41,17 +47,26 @@ class PollViewSet(ModelViewSet):
 
 
 class RegisterSerializer(ModelSerializer):
+    """
+    Serializer for user registration.
+    """
     password = CharField(write_only=True)
 
     class Meta:
         model = User
         fields = ("username", "password")
 
-    def validate_password(self, value):
+    def validate_password(self, value: str) -> str:
+        """
+        Validates the password.
+        """
         validate_password(value)
         return value
 
-    def create(self, validated_data):
+    def create(self, validated_data: dict[str, Any]) -> User:
+        """
+        Creates a new user.
+        """
         user = User.objects.create_user(
             username=validated_data["username"],
             password=validated_data["password"],
@@ -61,7 +76,10 @@ class RegisterSerializer(ModelSerializer):
 
 @api_view(["POST"])
 @permission_classes([AllowAny])
-def register(request):
+def register(request: Request) -> Response:
+    """
+    API endpoint for user registration.
+    """
     serializer = RegisterSerializer(data=request.data)
     if serializer.is_valid():
         serializer.save()
@@ -71,7 +89,10 @@ def register(request):
 
 @api_view(["POST"])
 @permission_classes([IsAuthenticated])
-def create_poll(request):
+def create_poll(request: Request) -> Response:
+    """
+    API endpoint to create a new poll.
+    """
     serializer = PollCreateSerializer(data=request.data, context={"request": request})
     if serializer.is_valid():
         poll = serializer.save()
@@ -81,7 +102,10 @@ def create_poll(request):
 
 @api_view(["DELETE"])
 @permission_classes([IsAuthenticated])
-def delete_poll(request, poll_id: int):
+def delete_poll(request: Request, poll_id: int) -> Response:
+    """
+    API endpoint to delete a poll.
+    """
     try:
         poll = Poll.objects.get(id=poll_id, owner=request.user)
     except Poll.DoesNotExist:
@@ -92,7 +116,10 @@ def delete_poll(request, poll_id: int):
 
 @api_view(["GET"])
 @permission_classes([IsAuthenticated])
-def my_polls(request):
+def my_polls(request: Request) -> Response:
+    """
+    API endpoint to list polls owned by the current user.
+    """
     polls = request.user.polls.all()
     serializer = PollSerializer(polls, many=True)
     return Response(serializer.data)

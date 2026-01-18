@@ -9,6 +9,9 @@ START_TIME = time.time()
 
 
 def get_server_status() -> Dict[str, Any]:
+    """
+    Returns a dictionary containing the current server status and system information.
+    """
     return {
         "status": "ok",
         "datetime": datetime.now(tz=timezone.utc).isoformat(),
