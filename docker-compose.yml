@@ -31,3 +31,23 @@ services:
     restart: always
     ports:
       - "6379:6379"
+
+  backend:
+    image: atakowiec/polls-backend
+    container_name: backend
+    ports:
+      - "8000:8000"
+    environment:
+      SECRET_KEY: supersecretkeygoeshere
+      MYSQL_HOST: db
+      MYSQL_DATABASE: polls_db
+      MYSQL_USER: user
+      MYSQL_PASSWORD: password
+      MYSQL_PORT: 3306
+      REDIS_URL: redis://redis:6379/0
+
+  frontend:
+    image: atakowiec/polls-frontend
+    container_name: frontend
+    ports:
+      - "3000:3000"

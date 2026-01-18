@@ -1,6 +1,4 @@
-import json
 from channels.generic.websocket import AsyncJsonWebsocketConsumer
-from polls.models import Poll
 from common.utils import get_server_status
 from typing import Any
 import asyncio
